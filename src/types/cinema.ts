@@ -39,4 +39,6 @@ export interface FilterOptions {
   selectedChain: string; // 'ALL' | 'XXI' | 'CGV' | 'Cinepolis'
   timeSlot: 'ALL' | 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
   maxPrice: number;
+  selectedDate: string; // Date filter value
 }
+

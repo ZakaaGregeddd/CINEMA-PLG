@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { FilterBar } from '@/components/FilterBar';
 import { DashboardTable } from '@/components/DashboardTable';
@@ -8,12 +8,36 @@ import { MovieCard } from '@/components/MovieCard';
 import { MovieModal } from '@/components/MovieModal';
 import { PALEMBANG_MOVIES, PALEMBANG_CINEMAS } from '@/data/palembangData';
 import { FilterOptions, Movie } from '@/types/cinema';
-import { Sparkles, AlertCircle, MapPin, Phone, Video } from 'lucide-react';
+import { Sparkles, AlertCircle, MapPin, Phone, Video, Clapperboard } from 'lucide-react';
 
 export default function Home() {
   const [selectedCinemaId, setSelectedCinemaId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
   const [activeMovie, setActiveMovie] = useState<Movie | null>(null);
+  const [movies, setMovies] = useState<Movie[]>(PALEMBANG_MOVIES);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isLive, setIsLive] = useState<boolean>(false);
+
+  // Generate initial fallback date options (today and next 4 days - 5 days total)
+  const [dateOptions, setDateOptions] = useState<Array<{ label: string; value: string }>>(() => {
+    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    const options = [];
+    const today = new Date();
+    
+    for (let i = 0; i < 5; i++) {
+      const d = new Date();
+      d.setDate(today.getDate() + i);
+      const dayName = days[d.getDay()];
+      const dateNum = d.getDate();
+      const monthName = months[d.getMonth()];
+      
+      const label = i === 0 ? `Hari Ini (${dayName}, ${dateNum} ${monthName})` : `${dayName}, ${dateNum} ${monthName}`;
+      const value = d.toISOString().split('T')[0];
+      options.push({ label, value });
+    }
+    return options;
+  });
 
   const [filters, setFilters] = useState<FilterOptions>({
     searchQuery: '',
@@ -21,7 +45,33 @@ export default function Home() {
     selectedChain: 'ALL',
     timeSlot: 'ALL',
     maxPrice: 150000,
+    selectedDate: new Date().toISOString().split('T')[0],
   });
+
+  useEffect(() => {
+    async function loadMovies() {
+      try {
+        setLoading(true);
+        const cinemaQuery = selectedCinemaId ? `&cinemaId=${selectedCinemaId}` : '';
+        const res = await fetch(`/api/movies?date=${filters.selectedDate}${cinemaQuery}`);
+        const data = await res.json();
+        if (data.status === 'success' && Array.isArray(data.movies)) {
+          setMovies(data.movies);
+          setIsLive(data.live || false);
+          if (Array.isArray(data.availableDates) && data.availableDates.length > 0) {
+            // Sort dates ascending
+            const sortedDates = [...data.availableDates].sort((a, b) => a.value.localeCompare(b.value));
+            setDateOptions(sortedDates);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load movies from API:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadMovies();
+  }, [filters.selectedDate, selectedCinemaId]);
 
   const selectedCinema = useMemo(() => {
     return PALEMBANG_CINEMAS.find((c) => c.id === selectedCinemaId) || null;
@@ -34,12 +84,13 @@ export default function Home() {
       selectedChain: 'ALL',
       timeSlot: 'ALL',
       maxPrice: 150000,
+      selectedDate: new Date().toISOString().split('T')[0],
     });
     setSelectedCinemaId(null);
   };
 
   const filteredMovies = useMemo(() => {
-    return PALEMBANG_MOVIES.filter((movie) => {
+    return movies.filter((movie) => {
       if (filters.searchQuery) {
         const q = filters.searchQuery.toLowerCase();
         const matchTitle = movie.title.toLowerCase().includes(q);
@@ -60,7 +111,8 @@ export default function Home() {
 
       return true;
     });
-  }, [filters, selectedCinemaId]);
+  }, [movies, filters, selectedCinemaId]);
+
 
   return (
     <div className="min-h-screen bg-background text-on-background flex flex-col lg:flex-row">
@@ -80,17 +132,50 @@ export default function Home() {
 
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 text-primary text-xs font-bold px-3 py-1 rounded-full mb-3">
-                <Sparkles className="w-3.5 h-3.5" />
-                Jadwal Bioskop Kota Palembang Real-Time
+              <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary text-xs font-bold px-3 py-1 rounded-full mb-3">
+                {isLive ? (
+                  <>
+                    <span className="flex h-2 w-2 relative">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+                    </span>
+                    <a
+                      href="https://jadwalnonton.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline transition-all"
+                    >
+                      Jadwal berdasarkan Jadwalnonton.com
+                    </a>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Jadwal Offline / Cadangan</span>
+                  </>
+                )}
               </div>
+
               <h2 className="text-2xl md:text-3xl font-extrabold text-primary tracking-tight">
                 {selectedCinema ? selectedCinema.name : 'Palembang Cinemas Schedule'}
               </h2>
-              <p className="text-xs text-on-surface-variant mt-2 max-w-2xl leading-relaxed font-semibold">
-                {selectedCinema
-                  ? selectedCinema.address
-                  : 'Lihat seluruh film yang sedang tayang, lokasi bioskop XXI, CGV, Cinepolis, jadwal jam tayang, serta perbandingan harga tiket terupdate di Palembang.'}
+              <p className="text-xs text-on-surface-variant mt-2 max-w-2xl leading-relaxed font-semibold flex items-center flex-wrap gap-1.5">
+                {selectedCinema ? (
+                  <>
+                    <span>{selectedCinema.address}</span>
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedCinema.name + ' Palembang')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-primary hover:text-primary/80 transition-colors p-1 bg-primary/10 rounded-md border border-primary/20 shrink-0"
+                      title="Buka di Google Maps"
+                    >
+                      <MapPin className="w-3.5 h-3.5" />
+                    </a>
+                  </>
+                ) : (
+                  'Lihat seluruh film yang sedang tayang, lokasi bioskop XXI, CGV, Cinepolis, jadwal jam tayang, serta perbandingan harga tiket terupdate di Palembang.'
+                )}
               </p>
             </div>
 
@@ -110,10 +195,35 @@ export default function Home() {
         </div>
 
         {/* Global Filter Bar */}
-        <FilterBar filters={filters} onChangeFilter={setFilters} onReset={resetFilters} />
+        <FilterBar
+          filters={filters}
+          onChangeFilter={setFilters}
+          onReset={resetFilters}
+          isCinemaSelected={selectedCinemaId !== null}
+          dateOptions={dateOptions}
+        />
+
 
         {/* Dashboard Content Switcher */}
-        {viewMode === 'table' ? (
+        {loading ? (
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-3xl p-16 flex flex-col items-center justify-center shadow-md min-h-[350px] animate-in fade-in duration-300">
+            <div className="relative mb-6">
+              <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl scale-125 animate-pulse" />
+              <div className="relative w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-inner">
+                <Clapperboard className="w-8 h-8 animate-bounce" />
+              </div>
+            </div>
+            <h3 className="text-base font-extrabold text-on-background tracking-wide">
+              Menghubungkan ke Jadwalnonton.com...
+            </h3>
+            <p className="text-xs text-on-surface-variant mt-1.5 font-semibold">
+              Mengambil jadwal terupdate bioskop Palembang secara real-time
+            </p>
+            <div className="w-64 h-1.5 bg-surface-container-high rounded-full overflow-hidden mt-6 border border-outline-variant/30">
+              <div className="h-full bg-gradient-to-r from-primary to-outline rounded-full animate-progress-bar" />
+            </div>
+          </div>
+        ) : viewMode === 'table' ? (
           <div>
             <div className="flex items-center justify-between mb-3 px-1">
               <h3 className="text-xs font-extrabold text-primary uppercase tracking-wider">
@@ -126,6 +236,7 @@ export default function Home() {
             <DashboardTable
               movies={filteredMovies}
               filters={filters}
+              selectedCinemaId={selectedCinemaId}
               onSelectMovie={(movie) => setActiveMovie(movie)}
             />
           </div>
@@ -143,23 +254,28 @@ export default function Home() {
                 <h4 className="font-bold text-on-background">Tidak ada film yang cocok</h4>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
                 {filteredMovies.map((movie) => (
                   <MovieCard
-                    key={movie.id}
-                    movie={movie}
-                    selectedCinemaId={selectedCinemaId}
-                    onSelectMovie={(m) => setActiveMovie(m)}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+                      key={movie.id}
+                      movie={movie}
+                      selectedCinemaId={selectedCinemaId}
+                      onSelectMovie={(m) => setActiveMovie(m)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
       </main>
 
       {/* Detail Movie & Trailer Modal */}
-      <MovieModal movie={activeMovie} onClose={() => setActiveMovie(null)} />
+      <MovieModal
+        movie={activeMovie}
+        selectedCinemaId={selectedCinemaId}
+        onClose={() => setActiveMovie(null)}
+      />
+
     </div>
   );
 }

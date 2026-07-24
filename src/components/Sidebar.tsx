@@ -1,5 +1,5 @@
 import React from 'react';
-import { Film, MapPin, Search, RefreshCw, LayoutGrid, Table } from 'lucide-react';
+import { Film, MapPin, Search, RefreshCw, LayoutGrid, Table, Clapperboard } from 'lucide-react';
 import { PALEMBANG_CINEMAS } from '@/data/palembangData';
 
 interface SidebarProps {
@@ -20,8 +20,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Brand Header */}
       <div className="flex items-center justify-between pb-4 border-b border-outline-variant">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-outline flex items-center justify-center shadow-md text-white font-extrabold text-xl">
-            P
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-outline flex items-center justify-center shadow-md text-white">
+            <Clapperboard className="w-5 h-5" />
           </div>
           <div>
             <h1 className="font-extrabold text-lg tracking-wide text-primary leading-none">
