@@ -1,14 +1,13 @@
 {
-  "name": "cinema-plg",
+  "name": "cinema-palembang",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "clsx": "^2.1.1",
     "lucide-react": "^1.26.0",
