@@ -40,6 +40,7 @@ Welcome to the **CINEMA-PLG** repository – a cinema website that provides comp
 - Sign in to Vercel, click **New Project**, select this repo, and let Vercel automatically detect the `vite` framework.
 - If environment variables are needed (e.g., API keys), add them under Settings → Environment Variables.
 - Vercel will provide a live URL within seconds after the build completes.
+- If you too lazy want to deploy, here is the link : **My Vercel :** https://cinema-palembang.vercel.app/
 
 ## Important folder structure
 
