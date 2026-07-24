@@ -6,7 +6,7 @@ Welcome to the **CINEMA-PLG** repository – a cinema website that provides comp
 
 - Modern front‑end built with **React + TypeScript** and **Vite** (or Next.js if you prefer).
 - Stylish UI with dark‑mode support and smooth animations for a pleasant experience.
-- Data is fetched from a public cinema/movie API (integration located in `src/api`).
+- Data is fetched from the public **JadwalNonton.com** API (integration located in `src/api`).
 - Can run locally on **localhost** or be deployed to **Vercel** (free and fast).
 
 ## Technology stack
@@ -70,6 +70,14 @@ Have ideas or found a bug? Fork the repo, create a new branch, and submit a **Pu
 ## License
 
 This project is licensed under the **MIT License** – you are free to use, modify, and distribute it.
+
+Thank you to **JadwalNonton.com** for providing the movie schedule data.
+
+## Special Thanks
+
+- **JadwalNonton.com** – data source for movie schedules.
+- **Vercel** – effortless deployment platform.
+- **Community contributors** – ideas, feedback, and bug reports.
 
 ---
 
