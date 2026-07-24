@@ -2,28 +2,74 @@
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #faf9f4;
-  --on-background: #1b1c19;
-  --primary: #7d562d;
-  --on-primary: #ffffff;
-  --surface: #faf9f4;
-  --surface-dim: #dbdad5;
-  --surface-bright: #faf9f4;
-  --surface-container-lowest: #ffffff;
-  --surface-container-low: #f5f4ef;
-  --surface-container: #efeee9;
-  --surface-container-high: #e9e8e3;
-  --surface-container-highest: #e3e3de;
-  --on-surface: #1b1c19;
-  --on-surface-variant: #50453b;
-  --outline: #82756a;
-  --outline-variant: #d4c4b7;
+@theme {
+  --color-background: #faf9f4;
+  --color-on-background: #1b1c19;
+  --color-primary: #7d562d;
+  --color-on-primary: #ffffff;
+  --color-surface: #faf9f4;
+  --color-surface-dim: #dbdad5;
+  --color-surface-bright: #faf9f4;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f5f4ef;
+  --color-surface-container: #efeee9;
+  --color-surface-container-high: #e9e8e3;
+  --color-surface-container-highest: #e3e3de;
+  --color-on-surface: #1b1c19;
+  --color-on-surface-variant: #50453b;
+  --color-outline: #82756a;
+  --color-outline-variant: #d4c4b7;
+
+  /* Additional template colors */
+  --color-primary-fixed-dim: #f0bd8b;
+  --color-tertiary-fixed-dim: #cac7af;
+  --color-error-container: #ffdad6;
+  --color-tertiary-container: #b0ad96;
+  --color-on-tertiary-container: #42412f;
+  --color-on-secondary-container: #6d644b;
+  --color-inverse-primary: #f0bd8b;
+  --color-on-tertiary-fixed: #1d1c0d;
+  --color-primary-container: #d4a373;
+  --color-surface-tint: #7d562d;
+  --color-on-error-container: #93000a;
+  --color-tertiary: #615f4b;
+  --color-secondary: #665e45;
+  --color-secondary-container: #eee2c2;
+  --color-tertiary-fixed: #e7e3ca;
+  --color-secondary-fixed-dim: #d2c6a7;
+  --color-secondary-fixed: #eee2c2;
+  --color-primary-fixed: #ffdcbd;
+  --color-surface-variant: #e3e3de;
+  --color-on-primary-fixed: #2c1600;
+  --color-error: #ba1a1a;
+  --color-on-primary-fixed-variant: #623f18;
+  --color-inverse-surface: #30312e;
+  --color-inverse-on-surface: #f2f1ec;
+  --color-on-error: #ffffff;
+  --color-on-primary-container: #5b3912;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-fixed-variant: #494835;
+  --color-on-secondary-fixed: #211b08;
+  --color-on-secondary-fixed-variant: #4e462f;
+  --color-on-secondary: #ffffff;
+
+  /* Custom Cinema Brand Colors */
+  --color-xxi-gold: #d4af37;
+  --color-cgv-red: #e50914;
+  --color-cinepolis-blue: #00529b;
+
+  /* Spacings */
+  --spacing-gutter: 24px;
+  --spacing-container-max: 1200px;
+
+  /* Fonts */
+  --font-manrope: 'Manrope', sans-serif;
+  --font-body-md: 'Manrope', sans-serif;
 }
 
 body {
-  color: var(--on-background);
-  background: var(--background);
+  color: var(--color-on-background);
+  background: var(--color-background);
   font-family: 'Manrope', sans-serif;
   overflow-x: hidden;
 }
@@ -35,16 +81,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--surface-container);
+  background: var(--color-surface-container);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--outline-variant);
+  background: var(--color-outline-variant);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  background: var(--color-primary);
 }
 
 .glass-card {
@@ -61,3 +107,4 @@ body {
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
+
