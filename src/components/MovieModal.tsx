@@ -1,6 +1,6 @@
 import React from 'react';
 import { Movie } from '@/types/cinema';
-import { X, Star, Clock, User, Film, Ticket, MapPin, Play } from 'lucide-react';
+import { X, Star, Clock, Ticket, MapPin } from 'lucide-react';
 
 interface MovieModalProps {
   movie: Movie | null;
@@ -11,12 +11,12 @@ export const MovieModal: React.FC<MovieModalProps> = ({ movie, onClose }) => {
   if (!movie) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200">
-      <div className="relative w-full max-w-4xl bg-surface border border-surface-border rounded-3xl overflow-hidden shadow-2xl my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
+      <div className="relative w-full max-w-4xl bg-surface-container-lowest border border-outline-variant rounded-3xl overflow-hidden shadow-2xl my-8 text-on-background">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-red-500 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all shadow-lg"
+          className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 hover:bg-red-600 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition-all shadow-md"
         >
           <X className="w-5 h-5" />
         </button>
@@ -39,80 +39,82 @@ export const MovieModal: React.FC<MovieModalProps> = ({ movie, onClose }) => {
         {/* Modal Body */}
         <div className="p-6 md:p-8 space-y-6">
           {/* Header Info */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-surface-border">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-outline-variant/30">
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-primary mb-1">
-                <span>{movie.genre.join(' • ')}</span>
-              </div>
-              <h2 className="text-2xl md:text-3xl font-extrabold text-white">{movie.title}</h2>
+              <span className="text-xs font-bold text-primary mb-1 block uppercase tracking-wide">
+                {movie.genre.join(' • ')}
+              </span>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-on-background">{movie.title}</h2>
               {movie.originalTitle && (
-                <p className="text-xs text-text-muted mt-0.5">Judul Asli: {movie.originalTitle}</p>
+                <p className="text-xs text-on-surface-variant/85 mt-0.5">Judul Asli: {movie.originalTitle}</p>
               )}
             </div>
 
-            <div className="flex items-center gap-4 bg-background/80 p-3 rounded-2xl border border-surface-border">
-              <div className="text-center px-3 border-r border-surface-border">
-                <div className="flex items-center gap-1 text-amber-400 font-extrabold text-lg">
-                  <Star className="w-4 h-4 fill-amber-400" />
+            <div className="flex items-center gap-4 bg-surface-container-low p-3 rounded-2xl border border-outline-variant">
+              <div className="text-center px-3 border-r border-outline-variant">
+                <div className="flex items-center gap-1 text-amber-600 font-extrabold text-lg justify-center">
+                  <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
                   {movie.rating}
                 </div>
-                <span className="text-[10px] text-text-muted">Rating TMDB</span>
+                <span className="text-[10px] text-on-surface-variant font-bold">Rating TMDB</span>
               </div>
-              <div className="text-center px-3 border-r border-surface-border">
-                <div className="font-extrabold text-white text-base">{movie.duration}</div>
-                <span className="text-[10px] text-text-muted">Durasi</span>
+              <div className="text-center px-3 border-r border-outline-variant">
+                <div className="font-extrabold text-on-background text-base">{movie.duration}</div>
+                <span className="text-[10px] text-on-surface-variant font-bold">Durasi</span>
               </div>
               <div className="text-center px-3">
                 <div className="font-extrabold text-primary text-base">{movie.ageRating}</div>
-                <span className="text-[10px] text-text-muted">Klasifikasi</span>
+                <span className="text-[10px] text-on-surface-variant font-bold">Klasifikasi</span>
               </div>
             </div>
           </div>
 
           {/* Director & Cast */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div className="bg-background/50 p-3.5 rounded-xl border border-surface-border">
-              <span className="text-text-muted font-semibold block mb-1">Sutradara:</span>
-              <span className="text-white font-bold text-sm">{movie.director}</span>
+            <div className="bg-surface-container-low p-3.5 rounded-xl border border-outline-variant">
+              <span className="text-on-surface-variant font-bold block mb-1">Sutradara:</span>
+              <span className="text-on-background font-extrabold text-sm">{movie.director}</span>
             </div>
-            <div className="bg-background/50 p-3.5 rounded-xl border border-surface-border">
-              <span className="text-text-muted font-semibold block mb-1">Pemeran Utama:</span>
-              <span className="text-white font-bold text-sm">{movie.cast.join(', ')}</span>
+            <div className="bg-surface-container-low p-3.5 rounded-xl border border-outline-variant">
+              <span className="text-on-surface-variant font-bold block mb-1">Pemeran Utama:</span>
+              <span className="text-on-background font-extrabold text-sm">{movie.cast.join(', ')}</span>
             </div>
           </div>
 
           {/* Synopsis */}
           <div>
-            <h3 className="text-sm font-extrabold text-white uppercase tracking-wider mb-2">
+            <h3 className="text-xs font-extrabold text-primary uppercase tracking-wider mb-2">
               Sinopsis Film
             </h3>
-            <p className="text-sm text-text-muted leading-relaxed">{movie.synopsis}</p>
+            <p className="text-sm text-on-surface-variant leading-relaxed">{movie.synopsis}</p>
           </div>
 
-          {/* All Palembang Cinemas Schedule */}
+          {/* Schedules */}
           <div>
-            <h3 className="text-sm font-extrabold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Ticket className="w-4 h-4 text-primary" />
+            <h3 className="text-xs font-extrabold text-primary uppercase tracking-wider mb-3 flex items-center gap-1.5">
+              <Ticket className="w-4 h-4" />
               Jadwal Penayangan di Bioskop Palembang
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {movie.schedules.map((sched) => (
                 <div
                   key={sched.cinemaId}
-                  className="bg-background/80 p-4 rounded-2xl border border-surface-border hover:border-primary/50 transition-all"
+                  className="bg-surface-container-low p-4 rounded-2xl border border-outline-variant hover:border-primary/50 transition-all"
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-white text-sm">{sched.cinemaName}</span>
-                    <span className="text-xs font-bold text-emerald-400">
+                    <span className="font-bold text-on-background text-sm">{sched.cinemaName}</span>
+                    <span className="text-xs font-bold text-emerald-600">
                       Rp {sched.price.toLocaleString('id-ID')}
                     </span>
                   </div>
-                  <div className="text-xs text-primary font-semibold mb-2">{sched.studioType}</div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="text-[10px] text-primary font-bold mb-2 uppercase tracking-wide">
+                    {sched.studioType}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
                     {sched.times.map((t) => (
                       <span
                         key={t}
-                        className="bg-surface hover:bg-primary hover:text-black text-white text-xs font-semibold px-2.5 py-1 rounded-lg border border-surface-border transition-all cursor-pointer"
+                        className="bg-surface-container-lowest hover:bg-primary hover:text-white text-on-background text-xs font-bold px-2.5 py-1 rounded-lg border border-outline-variant transition-all cursor-pointer shadow-sm"
                       >
                         {t}
                       </span>
