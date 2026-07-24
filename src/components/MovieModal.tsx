@@ -24,7 +24,7 @@ export const MovieModal: React.FC<MovieModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
       <div className="relative w-full max-w-4xl bg-surface-container-lowest border border-outline-variant rounded-3xl overflow-hidden shadow-2xl text-on-background max-h-[90vh] flex flex-col">
-        
+
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -37,7 +37,7 @@ export const MovieModal: React.FC<MovieModalProps> = ({
         {/* Scrollable Content Container */}
         <div className="overflow-y-auto flex-1 scrollbar-thin p-5 md:p-8">
           <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-            
+
             {/* Left Side: Full Poster View */}
             <div className="w-full md:w-64 shrink-0 flex flex-col gap-4">
               <div className="relative aspect-[2/3] w-full max-w-[240px] md:max-w-none mx-auto rounded-2xl overflow-hidden shadow-lg border border-outline-variant/30 bg-surface-container-high">
@@ -46,7 +46,7 @@ export const MovieModal: React.FC<MovieModalProps> = ({
                   {movie.ageRating}
                 </div>
               </div>
-              
+
               {/* TMDB & Info badges on Left under Poster */}
               <div className="bg-surface-container-low p-3.5 rounded-2xl border border-outline-variant flex justify-around text-center w-full max-w-[240px] md:max-w-none mx-auto shadow-sm">
                 <div className="flex-1 border-r border-outline-variant/50">
@@ -69,7 +69,7 @@ export const MovieModal: React.FC<MovieModalProps> = ({
 
             {/* Right Side: Movie Details & Schedules */}
             <div className="flex-1 space-y-5">
-              
+
               {/* Header Info */}
               <div>
                 <span className="text-[10px] font-extrabold text-primary mb-1 block uppercase tracking-wider">
@@ -121,7 +121,7 @@ export const MovieModal: React.FC<MovieModalProps> = ({
                   <Ticket className="w-3.5 h-3.5" />
                   {selectedCinemaId ? 'Jadwal Kelas & Studio' : 'Jadwal Penayangan di Bioskop Palembang'}
                 </h3>
-                
+
                 {schedulesToDisplay.length === 0 ? (
                   <div className="bg-surface-container-low p-6 rounded-2xl text-center text-xs text-on-surface-variant font-medium border border-outline-variant/30">
                     Tidak ada jadwal untuk bioskop ini.
@@ -141,7 +141,7 @@ export const MovieModal: React.FC<MovieModalProps> = ({
                             Rp {sched.price.toLocaleString('id-ID')}
                           </span>
                         </div>
-                        
+
                         {!selectedCinemaId && (
                           <div className="text-[9px] text-primary font-extrabold uppercase tracking-wide">
                             {sched.studioType}
@@ -169,11 +169,10 @@ export const MovieModal: React.FC<MovieModalProps> = ({
                               return (
                                 <span
                                   key={t}
-                                  className={`text-[10px] font-bold px-2.5 py-1 rounded transition-all cursor-pointer shadow-sm ${
-                                    isHighlighted
+                                  className={`text-[10px] font-bold px-2.5 py-1 rounded transition-all cursor-pointer shadow-sm ${isHighlighted
                                       ? 'bg-primary text-white border border-primary font-extrabold scale-105'
                                       : 'bg-surface-container-lowest border border-outline-variant/60 text-on-background hover:border-primary hover:text-primary'
-                                  }`}
+                                    }`}
                                 >
                                   {t}
                                 </span>
