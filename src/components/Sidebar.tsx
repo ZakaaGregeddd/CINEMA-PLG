@@ -1,5 +1,5 @@
 import React from 'react';
-import { Film, MapPin, Search, RefreshCw, LayoutGrid, Table, Clapperboard } from 'lucide-react';
+import { Film, MapPin, LayoutGrid, Table, Clapperboard } from 'lucide-react';
 import { PALEMBANG_CINEMAS } from '@/data/palembangData';
 
 interface SidebarProps {
@@ -16,18 +16,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggleViewMode,
 }) => {
   return (
-    <aside className="w-full lg:w-72 bg-surface-container-lowest border-r border-outline-variant p-4 flex flex-col gap-6 shrink-0 shadow-lg z-40">
+    <aside className="w-full lg:w-72 bg-surface-container-lowest lg:border-r border-b lg:border-b-0 border-outline-variant p-4 flex flex-col gap-6 shrink-0 shadow-lg lg:h-screen lg:sticky lg:top-0 overflow-y-auto">
       {/* Brand Header */}
       <div className="flex items-center justify-between pb-4 border-b border-outline-variant">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-outline flex items-center justify-center shadow-md text-white">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-outline flex items-center justify-center shadow-md text-white shrink-0">
             <Clapperboard className="w-5 h-5" />
           </div>
           <div>
             <h1 className="font-extrabold text-lg tracking-wide text-primary leading-none">
               Cinema<span className="text-on-background">Palembang</span>
             </h1>
-            <p className="text-xs text-on-surface-variant mt-1 opacity-80">Jadwal Bioskop Sumsel</p>
+            <p className="text-xs text-on-surface-variant mt-1 opacity-80 font-semibold">Jadwal Bioskop Sumsel</p>
           </div>
         </div>
       </div>
@@ -36,7 +36,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="bg-surface-container-low p-1 rounded-xl flex items-center border border-outline-variant">
         <button
           onClick={() => onToggleViewMode('grid')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
+          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             viewMode === 'grid'
               ? 'bg-primary text-white shadow-md'
               : 'text-on-surface-variant hover:text-primary'
@@ -47,7 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </button>
         <button
           onClick={() => onToggleViewMode('table')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
+          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             viewMode === 'table'
               ? 'bg-primary text-white shadow-md'
               : 'text-on-surface-variant hover:text-primary'
@@ -62,7 +62,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div>
         <button
           onClick={() => onSelectCinema(null)}
-          className={`w-full flex items-center justify-between p-3 rounded-xl transition-all border ${
+          className={`w-full flex items-center justify-between p-3 rounded-xl transition-all border cursor-pointer ${
             selectedCinemaId === null
               ? 'bg-primary/10 border-primary text-primary font-extrabold shadow-sm'
               : 'bg-surface-container hover:bg-surface-container-high text-on-surface border-transparent'
@@ -97,18 +97,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 key={cinema.id}
                 onClick={() => onSelectCinema(cinema.id)}
-                className={`w-full text-left p-3 rounded-xl transition-all flex flex-col gap-1 border ${
+                className={`w-full text-left p-3 rounded-xl transition-all flex flex-col gap-1 border cursor-pointer ${
                   isSelected
                     ? 'bg-primary/10 border-primary text-primary shadow-sm font-semibold'
                     : 'bg-surface-container/50 hover:bg-surface-container-high border-outline-variant/30 text-on-surface-variant hover:text-primary'
                 }`}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-1">
                   <span className={`text-sm font-bold line-clamp-1 ${isSelected ? 'text-primary' : 'text-on-background'}`}>
                     {cinema.name}
                   </span>
                   <span
-                    className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase border ${chainBadgeColor}`}
+                    className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase border shrink-0 ${chainBadgeColor}`}
                   >
                     {cinema.chain}
                   </span>
@@ -124,7 +124,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Footer Info */}
-      <div className="pt-3 border-t border-outline-variant text-[11px] text-on-surface-variant flex items-center justify-between opacity-80">
+      <div className="pt-3 border-t border-outline-variant text-[11px] text-on-surface-variant flex items-center justify-between opacity-80 shrink-0">
         <span>No Database (API)</span>
         <span className="text-emerald-600 font-semibold flex items-center gap-1">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Vercel Ready

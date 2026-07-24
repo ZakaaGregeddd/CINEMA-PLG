@@ -180,23 +180,46 @@ export const DashboardTable: React.FC<DashboardTableProps> = ({
                   {selectedCinemaId && (
                     <td className="py-4 px-5">
                       <div className="flex flex-col gap-2">
-                        {row.matchedSchedules.map((sched: any, sIdx: number) => (
-                          <div key={sIdx} className="flex flex-col gap-1">
-                            <span className="text-[9px] font-extrabold text-primary uppercase tracking-wide">
-                              {sched.studioType} • Rp {sched.price.toLocaleString('id-ID')}
-                            </span>
-                            <div className="flex flex-wrap gap-1">
-                              {(sched.times as string[]).map((time: string) => (
-                                <span
-                                  key={time}
-                                  className="bg-surface-container-low border border-outline-variant/60 text-on-background text-[10px] font-bold px-2 py-0.5 rounded transition-all cursor-pointer shadow-sm hover:border-primary hover:text-primary"
-                                >
-                                  {time}
-                                </span>
-                              ))}
+                        {row.matchedSchedules.map((sched: any, sIdx: number) => {
+                          const todayStr = new Date().toLocaleDateString('sv');
+                          const isToday = filters.selectedDate === todayStr;
+                          let highlightIdx = -1;
+                          if (isToday) {
+                            const now = new Date();
+                            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+                            highlightIdx = (sched.times as string[]).findIndex((t) => {
+                              const [h, m] = t.split(':').map(Number);
+                              return (h * 60 + m) >= currentMinutes;
+                            });
+                          } else if (sched.times.length > 0) {
+                            highlightIdx = 0;
+                          }
+
+                          return (
+                            <div key={sIdx} className="flex flex-col gap-1">
+                              <span className="text-[9px] font-extrabold text-primary uppercase tracking-wide">
+                                {sched.studioType} • Rp {sched.price.toLocaleString('id-ID')}
+                              </span>
+                              <div className="flex flex-wrap gap-1">
+                                {(sched.times as string[]).map((time: string, tIdx: number) => {
+                                  const isHighlighted = tIdx === highlightIdx;
+                                  return (
+                                    <span
+                                      key={time}
+                                      className={`text-[10px] font-bold px-2.5 py-1 rounded transition-all cursor-pointer shadow-sm ${
+                                        isHighlighted
+                                          ? 'bg-primary text-white border border-primary font-extrabold scale-105'
+                                          : 'bg-surface-container-low border border-outline-variant/60 text-on-background hover:border-primary hover:text-primary'
+                                      }`}
+                                    >
+                                      {time}
+                                    </span>
+                                  );
+                                })}
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </td>
                   )}

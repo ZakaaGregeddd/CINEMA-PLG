@@ -8,7 +8,7 @@ import { MovieCard } from '@/components/MovieCard';
 import { MovieModal } from '@/components/MovieModal';
 import { PALEMBANG_MOVIES, PALEMBANG_CINEMAS } from '@/data/palembangData';
 import { FilterOptions, Movie } from '@/types/cinema';
-import { Sparkles, AlertCircle, MapPin, Phone, Video, Clapperboard } from 'lucide-react';
+import { Sparkles, AlertCircle, MapPin, Phone, Video, Clapperboard, ArrowUp } from 'lucide-react';
 
 export default function Home() {
   const [selectedCinemaId, setSelectedCinemaId] = useState<string | null>(null);
@@ -24,14 +24,14 @@ export default function Home() {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
     const options = [];
     const today = new Date();
-    
+
     for (let i = 0; i < 5; i++) {
       const d = new Date();
       d.setDate(today.getDate() + i);
       const dayName = days[d.getDay()];
       const dateNum = d.getDate();
       const monthName = months[d.getMonth()];
-      
+
       const label = i === 0 ? `Hari Ini (${dayName}, ${dateNum} ${monthName})` : `${dayName}, ${dateNum} ${monthName}`;
       const value = d.toISOString().split('T')[0];
       options.push({ label, value });
@@ -72,6 +72,27 @@ export default function Home() {
     }
     loadMovies();
   }, [filters.selectedDate, selectedCinemaId]);
+
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
 
   const selectedCinema = useMemo(() => {
     return PALEMBANG_CINEMAS.find((c) => c.id === selectedCinemaId) || null;
@@ -139,14 +160,7 @@ export default function Home() {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
                     </span>
-                    <a
-                      href="https://jadwalnonton.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline transition-all"
-                    >
-                      Jadwal berdasarkan Jadwalnonton.com
-                    </a>
+                    <span>Jadwal berdasarkan Jadwalnonton.com</span>
                   </>
                 ) : (
                   <>
@@ -257,22 +271,34 @@ export default function Home() {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
                 {filteredMovies.map((movie) => (
                   <MovieCard
-                      key={movie.id}
-                      movie={movie}
-                      selectedCinemaId={selectedCinemaId}
-                      onSelectMovie={(m) => setActiveMovie(m)}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+                    key={movie.id}
+                    movie={movie}
+                    selectedCinemaId={selectedCinemaId}
+                    onSelectMovie={(m) => setActiveMovie(m)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </main>
+
+      {/* Floating Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 bg-white/60 backdrop-blur-sm border-2 border-primary/50 text-primary hover:text-white hover:bg-primary hover:border-primary px-4 py-2.5 rounded-full font-extrabold text-xs transition-all shadow-xl hover:shadow-primary/20 scale-100 hover:scale-105 active:scale-95 cursor-pointer whitespace-nowrap"
+        >
+          <ArrowUp className="w-4 h-4" />
+          <span>Kembali ke Atas</span>
+        </button>
+      )}
 
       {/* Detail Movie & Trailer Modal */}
       <MovieModal
         movie={activeMovie}
         selectedCinemaId={selectedCinemaId}
+        selectedDate={filters.selectedDate}
         onClose={() => setActiveMovie(null)}
       />
 

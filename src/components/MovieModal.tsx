@@ -6,9 +6,15 @@ interface MovieModalProps {
   movie: Movie | null;
   selectedCinemaId?: string | null;
   onClose: () => void;
+  selectedDate?: string;
 }
 
-export const MovieModal: React.FC<MovieModalProps> = ({ movie, selectedCinemaId, onClose }) => {
+export const MovieModal: React.FC<MovieModalProps> = ({
+  movie,
+  selectedCinemaId,
+  onClose,
+  selectedDate = new Date().toLocaleDateString('sv')
+}) => {
   if (!movie) return null;
 
   const schedulesToDisplay = selectedCinemaId
@@ -143,14 +149,37 @@ export const MovieModal: React.FC<MovieModalProps> = ({ movie, selectedCinemaId,
                         )}
 
                         <div className="flex flex-wrap gap-1 mt-1">
-                          {sched.times.map((t) => (
-                            <span
-                              key={t}
-                              className="bg-surface-container-lowest hover:bg-primary hover:text-white border border-outline-variant/60 text-on-background text-[10px] font-bold px-2 py-0.5 rounded transition-all cursor-pointer shadow-sm"
-                            >
-                              {t}
-                            </span>
-                          ))}
+                          {(() => {
+                            const todayStr = new Date().toLocaleDateString('sv');
+                            const isToday = selectedDate === todayStr;
+                            let highlightIdx = -1;
+                            if (isToday) {
+                              const now = new Date();
+                              const currentMinutes = now.getHours() * 60 + now.getMinutes();
+                              highlightIdx = sched.times.findIndex((t: string) => {
+                                const [h, m] = t.split(':').map(Number);
+                                return (h * 60 + m) >= currentMinutes;
+                              });
+                            } else if (sched.times.length > 0) {
+                              highlightIdx = 0;
+                            }
+
+                            return sched.times.map((t: string, tIdx: number) => {
+                              const isHighlighted = tIdx === highlightIdx;
+                              return (
+                                <span
+                                  key={t}
+                                  className={`text-[10px] font-bold px-2.5 py-1 rounded transition-all cursor-pointer shadow-sm ${
+                                    isHighlighted
+                                      ? 'bg-primary text-white border border-primary font-extrabold scale-105'
+                                      : 'bg-surface-container-lowest border border-outline-variant/60 text-on-background hover:border-primary hover:text-primary'
+                                  }`}
+                                >
+                                  {t}
+                                </span>
+                              );
+                            });
+                          })()}
                         </div>
                       </div>
                     ))}

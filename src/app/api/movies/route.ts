@@ -11,6 +11,18 @@ interface CacheEntry {
 const cacheMap = new Map<string, CacheEntry>();
 const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 
+// Prevent Cache Stampede by reusing the same promise for concurrent requests
+const activeScrapes = new Map<string, Promise<{ movies: any[]; availableDates: any[]; cinemaDates: Record<string, any[]> }>>();
+
+// Permanent memory cache for movie details (synopsis, director, cast, trailer) as they are static
+interface MovieDetails {
+  director: string;
+  cast: string[];
+  synopsis: string;
+  trailerUrl?: string;
+}
+const movieDetailsCache = new Map<string, MovieDetails>();
+
 const THEATER_URLS = [
   { id: 'cgv-ptc', chain: 'CGV', name: 'CGV PTC Mall', url: 'https://jadwalnonton.com/bioskop/di-palembang/cgv-ptc-mall-palembang.html' },
   { id: 'cgv-soma', chain: 'CGV', name: 'CGV Social Market Palembang', url: 'https://jadwalnonton.com/bioskop/di-palembang/cgv-social-market-palembang-palembang-2.html' },
@@ -28,8 +40,9 @@ async function scrapeSchedules(dateStr?: string): Promise<{ movies: any[]; avail
   const cinemaDates: Record<string, any[]> = {};
   const formattedDate = dateStr ? dateStr.replace(/-/g, '') : ''; // e.g. "2026-07-24" -> "20260724"
 
-  // Scrape all theater pages in parallel
-  const fetchPromises = THEATER_URLS.map(async (theater) => {
+  // Scrape all theater pages in parallel with a slight stagger delay to prevent triggering rate-limiting timeouts
+  const fetchPromises = THEATER_URLS.map(async (theater, index) => {
+    await new Promise((resolve) => setTimeout(resolve, index * 150));
     try {
       const url = formattedDate ? `${theater.url}?date=${formattedDate}` : theater.url;
       const response = await fetch(url, {
@@ -196,6 +209,17 @@ async function scrapeSchedules(dateStr?: string): Promise<{ movies: any[]; avail
   // Scrape each movie detail page in parallel to get actual synopsis and trailer
   const movieDetailPromises = Array.from(allMoviesMap.values()).map(async (movie: any) => {
     if (!movie.detailUrl) return;
+
+    // Check movie details static cache first to prevent redundant outgoing fetches
+    const cachedDetails = movieDetailsCache.get(movie.detailUrl);
+    if (cachedDetails) {
+      movie.director = cachedDetails.director;
+      movie.cast = cachedDetails.cast;
+      movie.synopsis = cachedDetails.synopsis;
+      movie.trailerUrl = cachedDetails.trailerUrl;
+      return;
+    }
+
     try {
       const detailRes = await fetch(movie.detailUrl, {
         headers: {
@@ -246,6 +270,14 @@ async function scrapeSchedules(dateStr?: string): Promise<{ movies: any[]; avail
           }
         }
       }
+
+      // Store in memory cache to bypass future fetches
+      movieDetailsCache.set(movie.detailUrl, {
+        director: movie.director,
+        cast: movie.cast,
+        synopsis: movie.synopsis,
+        trailerUrl: movie.trailerUrl
+      });
     } catch (err) {
       console.error(`Error scraping movie details for ${movie.title}:`, err);
     }
@@ -300,8 +332,21 @@ export async function GET(request: Request) {
     isFromCache = true;
   } else {
     try {
-      console.log(`Fetching live schedules and dynamic dates for ${dateParam} from JadwalNonton...`);
-      const res = await scrapeSchedules(dateParam);
+      // Reuse active scrape promises for concurrent requests (Thundering Herd / Cache Stampede protection)
+      let activeScrape = activeScrapes.get(dateParam);
+      if (!activeScrape) {
+        console.log(`[API] Scrape Cache Miss for date ${dateParam}. Initiating live scrape...`);
+        activeScrape = scrapeSchedules(dateParam);
+        activeScrapes.set(dateParam, activeScrape);
+      } else {
+        console.log(`[API] Scrape Cache Pending for date ${dateParam}. Reusing active scraping process...`);
+      }
+
+      const res = await activeScrape;
+      
+      // Clean up after resolution
+      activeScrapes.delete(dateParam);
+
       if (res.movies && res.movies.length > 0) {
         cacheMap.set(dateParam, {
           movies: res.movies,
@@ -314,6 +359,7 @@ export async function GET(request: Request) {
         cinemaDates = res.cinemaDates;
       }
     } catch (err) {
+      activeScrapes.delete(dateParam);
       console.error(`Error fetching live schedules for date ${dateParam}`, err);
     }
   }
