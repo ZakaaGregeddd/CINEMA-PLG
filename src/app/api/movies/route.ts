@@ -20,6 +20,7 @@ interface MovieDetails {
   cast: string[];
   synopsis: string;
   trailerUrl?: string;
+  rating?: number | string;
 }
 const movieDetailsCache = new Map<string, MovieDetails>();
 
@@ -187,7 +188,7 @@ async function scrapeSchedules(dateStr?: string): Promise<{ movies: any[]; avail
             originalTitle: title,
             poster,
             backdrop: poster,
-            rating: 8.2,
+            rating: 'Unknown',
             duration,
             ageRating,
             genre: genres,
@@ -217,6 +218,9 @@ async function scrapeSchedules(dateStr?: string): Promise<{ movies: any[]; avail
       movie.cast = cachedDetails.cast;
       movie.synopsis = cachedDetails.synopsis;
       movie.trailerUrl = cachedDetails.trailerUrl;
+      if (cachedDetails.rating) {
+        movie.rating = cachedDetails.rating;
+      }
       return;
     }
 
@@ -271,12 +275,35 @@ async function scrapeSchedules(dateStr?: string): Promise<{ movies: any[]; avail
         }
       }
 
+      // Fetch real rating from OMDB API using public key
+      let realRating: number | string = 'Unknown';
+      try {
+        const omdbRes = await fetch(
+          `http://www.omdbapi.com/?apikey=thewdb&t=${encodeURIComponent(movie.title)}`,
+          { signal: AbortSignal.timeout(5000) }
+        );
+        if (omdbRes.ok) {
+          const omdbData = await omdbRes.json();
+          if (omdbData && omdbData.Response === 'True' && omdbData.imdbRating && omdbData.imdbRating !== 'N/A') {
+            const parsed = parseFloat(omdbData.imdbRating);
+            if (!isNaN(parsed)) {
+              realRating = parsed;
+            }
+          }
+        }
+      } catch (omdbErr) {
+        console.error(`Error fetching OMDB rating for ${movie.title}:`, omdbErr);
+      }
+
+      movie.rating = realRating;
+
       // Store in memory cache to bypass future fetches
       movieDetailsCache.set(movie.detailUrl, {
         director: movie.director,
         cast: movie.cast,
         synopsis: movie.synopsis,
-        trailerUrl: movie.trailerUrl
+        trailerUrl: movie.trailerUrl,
+        rating: movie.rating
       });
     } catch (err) {
       console.error(`Error scraping movie details for ${movie.title}:`, err);

@@ -237,7 +237,7 @@ export default function Home() {
                           {currentMovie.genre.join(' • ')}
                         </span>
                         <span className="bg-white/20 backdrop-blur-md border border-white/10 text-white font-bold text-[10px] px-3 py-1 rounded-full shrink-0">
-                          ★ {currentMovie.rating.toFixed(1)}
+                          ★ {typeof currentMovie.rating === 'number' ? currentMovie.rating.toFixed(1) : currentMovie.rating}
                         </span>
                       </div>
 

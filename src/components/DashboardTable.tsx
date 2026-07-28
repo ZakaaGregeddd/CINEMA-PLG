@@ -129,7 +129,6 @@ export const DashboardTable: React.FC<DashboardTableProps> = ({
                         <img
                           src={row.movie.poster}
                           alt={row.movie.title}
-                          referrerPolicy="no-referrer"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -178,7 +177,7 @@ export const DashboardTable: React.FC<DashboardTableProps> = ({
                         <div className="relative group/tooltip inline-block align-middle">
                           <Info className="w-3.5 h-3.5 text-on-surface-variant/60 hover:text-primary cursor-pointer transition-colors" />
                           <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/tooltip:block bg-surface-container-high text-on-surface text-[10px] p-2 rounded-lg shadow-lg border border-outline-variant whitespace-normal w-48 z-50 text-center font-bold">
-                            Harga mungkin berbeda. Mohon periksa melalui aplikasi resmi.
+                            Harga mungkin tidak sesuai, harap periksa kembali melalui aplikasi/website resmi
                           </div>
                         </div>
                       </div>
@@ -215,11 +214,10 @@ export const DashboardTable: React.FC<DashboardTableProps> = ({
                                   return (
                                     <span
                                       key={time}
-                                      className={`text-[10px] font-bold px-2.5 py-1 rounded transition-all cursor-pointer shadow-sm ${
-                                        isHighlighted
+                                      className={`text-[10px] font-bold px-2.5 py-1 rounded transition-all cursor-pointer shadow-sm ${isHighlighted
                                           ? 'bg-primary text-white border border-primary font-extrabold scale-105'
                                           : 'bg-surface-container-low border border-outline-variant/60 text-on-background hover:border-primary hover:text-primary'
-                                      }`}
+                                        }`}
                                     >
                                       {time}
                                     </span>

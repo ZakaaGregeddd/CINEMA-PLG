@@ -22,7 +22,7 @@ export interface Movie {
   originalTitle?: string;
   poster: string;
   backdrop: string;
-  rating: number;
+  rating: number | string;
   duration: string;
   ageRating: string;
   genre: string[];

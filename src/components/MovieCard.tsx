@@ -28,8 +28,8 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, selectedCinemaId, o
     prices.length === 0
       ? 'Tidak tersedia'
       : minPrice === maxPrice
-      ? `Rp ${minPrice.toLocaleString('id-ID')}`
-      : `Rp ${minPrice.toLocaleString('id-ID')} - Rp ${maxPrice.toLocaleString('id-ID')}`;
+        ? `Rp ${minPrice.toLocaleString('id-ID')}`
+        : `Rp ${minPrice.toLocaleString('id-ID')} - Rp ${maxPrice.toLocaleString('id-ID')}`;
 
   return (
     <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300 shadow-md flex flex-col group">
@@ -38,7 +38,6 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, selectedCinemaId, o
         <img
           src={movie.poster}
           alt={movie.title}
-          referrerPolicy="no-referrer"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40" />
@@ -91,7 +90,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, selectedCinemaId, o
                 </span>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-1.5 border-t border-outline-variant/20 pt-1.5 mt-0.5">
               <Ticket className="w-3.5 h-3.5 text-primary shrink-0" />
               <div>
@@ -101,7 +100,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, selectedCinemaId, o
                   <div className="relative group/tooltip inline-block align-middle">
                     <Info className="w-3.5 h-3.5 text-on-surface-variant/60 hover:text-primary cursor-pointer transition-colors" />
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/tooltip:block bg-surface-container-high text-on-surface text-[10px] p-2 rounded-lg shadow-lg border border-outline-variant whitespace-normal w-48 z-50 text-center font-bold">
-                      Harga mungkin berbeda. Mohon periksa melalui aplikasi resmi.
+                      Harga mungkin tidak sesuai, harap periksa kembali melalui aplikasi/website resmi
                     </div>
                   </div>
                 </div>
