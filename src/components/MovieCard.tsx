@@ -1,6 +1,6 @@
 import React from 'react';
 import { Movie } from '@/types/cinema';
-import { Star, Clock, MapPin, Play, Ticket } from 'lucide-react';
+import { Star, Clock, MapPin, Play, Ticket, Info } from 'lucide-react';
 
 interface MovieCardProps {
   movie: Movie;
@@ -38,6 +38,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, selectedCinemaId, o
         <img
           src={movie.poster}
           alt={movie.title}
+          referrerPolicy="no-referrer"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40" />
@@ -95,7 +96,15 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, selectedCinemaId, o
               <Ticket className="w-3.5 h-3.5 text-primary shrink-0" />
               <div>
                 <span className="text-[9px] font-extrabold uppercase text-primary tracking-wide block">Harga Tiket:</span>
-                <span className="text-[11px] text-emerald-600 font-extrabold">{priceText}</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-[11px] text-emerald-600 font-extrabold">{priceText}</span>
+                  <div className="relative group/tooltip inline-block align-middle">
+                    <Info className="w-3.5 h-3.5 text-on-surface-variant/60 hover:text-primary cursor-pointer transition-colors" />
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/tooltip:block bg-surface-container-high text-on-surface text-[10px] p-2 rounded-lg shadow-lg border border-outline-variant whitespace-normal w-48 z-50 text-center font-bold">
+                      Harga mungkin berbeda. Mohon periksa melalui aplikasi resmi.
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

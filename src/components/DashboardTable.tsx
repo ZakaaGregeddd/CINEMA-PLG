@@ -1,6 +1,6 @@
 import React from 'react';
 import { Movie, FilterOptions } from '@/types/cinema';
-import { MapPin, Film, PlayCircle } from 'lucide-react';
+import { MapPin, Film, PlayCircle, Info } from 'lucide-react';
 
 interface DashboardTableProps {
   movies: Movie[];
@@ -129,6 +129,7 @@ export const DashboardTable: React.FC<DashboardTableProps> = ({
                         <img
                           src={row.movie.poster}
                           alt={row.movie.title}
+                          referrerPolicy="no-referrer"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -170,9 +171,17 @@ export const DashboardTable: React.FC<DashboardTableProps> = ({
                       <span className="text-[9px] font-extrabold text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded w-fit uppercase tracking-wide truncate">
                         {row.studioTypesText}
                       </span>
-                      <span className="text-xs font-extrabold text-emerald-600">
-                        {row.priceText}
-                      </span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-xs font-extrabold text-emerald-600">
+                          {row.priceText}
+                        </span>
+                        <div className="relative group/tooltip inline-block align-middle">
+                          <Info className="w-3.5 h-3.5 text-on-surface-variant/60 hover:text-primary cursor-pointer transition-colors" />
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/tooltip:block bg-surface-container-high text-on-surface text-[10px] p-2 rounded-lg shadow-lg border border-outline-variant whitespace-normal w-48 z-50 text-center font-bold">
+                            Harga mungkin berbeda. Mohon periksa melalui aplikasi resmi.
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </td>
 

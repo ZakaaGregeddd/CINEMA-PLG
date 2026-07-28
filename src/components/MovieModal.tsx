@@ -1,6 +1,6 @@
 import React from 'react';
 import { Movie } from '@/types/cinema';
-import { X, Star, Clock, Ticket, MapPin, Film } from 'lucide-react';
+import { X, Star, Clock, Ticket, MapPin, Film, Info } from 'lucide-react';
 
 interface MovieModalProps {
   movie: Movie | null;
@@ -41,7 +41,7 @@ export const MovieModal: React.FC<MovieModalProps> = ({
             {/* Left Side: Full Poster View */}
             <div className="w-full md:w-64 shrink-0 flex flex-col gap-4">
               <div className="relative aspect-[2/3] w-full max-w-[240px] md:max-w-none mx-auto rounded-2xl overflow-hidden shadow-lg border border-outline-variant/30 bg-surface-container-high">
-                <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover" />
+                <img src={movie.poster} alt={movie.title} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                 <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-primary text-[10px] font-bold px-2 py-0.5 rounded border border-primary/20">
                   {movie.ageRating}
                 </div>
@@ -137,9 +137,17 @@ export const MovieModal: React.FC<MovieModalProps> = ({
                           <span className="font-extrabold text-on-background text-xs">
                             {selectedCinemaId ? sched.studioType : sched.cinemaName}
                           </span>
-                          <span className="text-xs font-bold text-emerald-600">
-                            Rp {sched.price.toLocaleString('id-ID')}
-                          </span>
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs font-bold text-emerald-600">
+                              Rp {sched.price.toLocaleString('id-ID')}
+                            </span>
+                            <div className="relative group/tooltip inline-block align-middle">
+                              <Info className="w-3.5 h-3.5 text-on-surface-variant/60 hover:text-primary cursor-pointer transition-colors" />
+                              <div className="absolute bottom-full right-0 mb-2 hidden group-hover/tooltip:block bg-surface-container-high text-on-surface text-[10px] p-2 rounded-lg shadow-lg border border-outline-variant whitespace-normal w-48 z-50 text-center font-bold">
+                                Harga mungkin berbeda. Mohon periksa melalui aplikasi resmi.
+                              </div>
+                            </div>
+                          </div>
                         </div>
 
                         {!selectedCinemaId && (
