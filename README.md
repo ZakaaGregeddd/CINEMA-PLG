@@ -61,7 +61,7 @@ CINEMA-PLG/
 - **Movie list**: Displays all currently showing movies with posters, ratings, and short synopses.
 - **Filter & Search**: Search movies by title or genre.
 - **Detail modal**: Click a poster to open a modal with full details (duration, director, schedule).
-- **Responsive design**: UI adapts automatically to desktop, tablet, and mobile screens.
+- **Responsive design**: UI adapts automatically to desktop, tablet but a fizzy fuzzy on mobile screens.
 
 ## Contributing
 
